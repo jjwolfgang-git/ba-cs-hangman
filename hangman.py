@@ -12,8 +12,8 @@ correct = []
 wordGuessed = False
 
 # Choose our word
-wordSet = set(wordList)
-word = wordSet.pop()
+rn = random.randint(0,len(wordList)-1)
+word = wordList[rn]
 print(word)
 
 wordStruct = createWordStruct(word)

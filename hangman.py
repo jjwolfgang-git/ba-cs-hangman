@@ -14,10 +14,8 @@ wordGuessed = False
 # Choose our word
 wordSet = set(wordList)
 word = wordSet.pop()
-print(word)
 
 wordStruct = createWordStruct(word)
-print(wordStruct)
 
 print("Welcome - Let's Play Hangman!")
 print("Take your first turn:")

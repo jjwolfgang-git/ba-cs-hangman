@@ -1,0 +1,108 @@
+############## hangman.py ###############################
+
+# Imports for hangman.py
+import tkinter as tk
+from tkinter import messagebox
+import random
+from hang_words import wordList
+from hang_utils import createWordStruct, displayInfo, getUserGuess, analyzeGuess, isWordFound, isGuessValid, display 
+
+# Code to create the GUI
+# Create the main window
+root = tk.Tk()
+root.title("Hangman Game")
+
+# Create GUI components
+title_label = tk.Label(root, text="Welcome-Let's Play Hangman!", font=("Helvetica", 16))
+title_label.pack(pady=10)
+
+word_label = tk.Label(root, text="", font=("Helvetica", 20))
+word_label.pack(pady=10)
+
+guess_entry = tk.Entry(root, width=5, font=("Helvetica", 14))
+guess_entry.pack(pady=5)
+
+guess_button = tk.Button(root, text="Guess", command=letterGuessed)
+guess_button.pack(pady=5)
+
+message_label = tk.Label(root, text="Guess a letter!", font=("Helvetica", 12))
+message_label.pack(pady=10)
+
+incorrect_label = tk.Label(root, text="Incorrect Guesses: ", font=("Helvetica", 12))
+incorrect_label.pack(pady=5)
+
+attempts_label = tk.Label(root, text="", font=("Helvetica", 12))
+attempts_label.pack(pady=5)
+
+new_button = tk.Button(root, text="New Game", command=startGame)
+new_button.pack(pady=10)
+
+# Set everything up to start the game
+startGame()
+
+# Kick off the GUI
+root.mainloop()
+
+==================================
+
+# startGame() Function
+def startGame():
+    global num_guesses, incorrect, correct, word, wordStruct
+
+    alreadyGuessed = {""}
+    alreadyGuessed.clear()
+
+
+
+
+    # Need to add some parameters to pass into the display() function
+    display(wordStruct, num_guesses, incorrect, word_label, incorrect_label, attempts_label, guess_entry)
+
+# The callback when the Guess button is pressed: 
+def letterGuessed():
+
+    global num_guesses, incorrect, correct
+
+    # Get the letter from the GUI widget and immediately convert it to uppercase
+    letter = guess_entry.get().upper()
+    
+    # Make sure a valid letter was provided
+    # Make sure the letter was not already guessed
+    if not isGuessValid(letter, incorrect, correct):
+        messagebox.showwarning("Invalid Input!", "Please enter a letter that hasn't been guessed")
+        return
+    
+    letterAppears = analyzeGuess(letter, wordStruct)
+    
+    if letterAppears == 0: #letter does not appear in the word
+        incorrect.append(letter)
+        num_guesses = num_guesses - 1
+    else:
+        correct.append(letter)
+        
+    if num_guesses == 0: #player loses
+        messagebox.showerror("Game Over", f"The word was {word}. Please play again!")
+
+    elif isWordFound(wordStruct) == True: #player wins
+        messagebox.showinfo("You WIN!", f"You had {num_guesses} incorrect guesses remaining")
+        
+    display(wordStruct, num_guesses, incorrect, word_label, incorrect_label, attempts_label, guess_entry)
+
+############## hanga.py ###############################
+# Need to change the display() function to use the GUI widgets
+import tkinter as tk
+
+def display(wl, num, inco_letters, wordLabel, incoLabel, attemptLabel, guessEntry):
+
+    # Clear the previous guessed letter
+    guessEntry.delete(0, tk.END)
+    
+    # Put the word into the GUI
+    wordLabel.config(text=formWordString(wl))
+
+    # List the incorrect guessed letters 
+    incoLabel.config(text=f"Incorrect Guesses: {formIncorrectString(inco_letters)}")
+    
+    # Tell the user how many more guesses they have remaining
+    attemptLabel.config(text=f"You have {num} incorrect guesses remaining")
+
